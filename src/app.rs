@@ -3,7 +3,7 @@ use amethyst::{
         Prefab, PrefabLoader, PrefabLoaderSystem, RonFormat,
         Handle
     },
-    controls::{FlyControlBundle, FlyControlTag},
+    controls::{FlyControlBundle, FlyControlTag, HideCursor},
     ecs::{Component, DenseVecStorage},
     prelude::*,
     input::{is_close_requested, is_key_down, InputBundle},
@@ -44,10 +44,12 @@ impl SimpleState for MainState {
         world.write_resource::<CubePrefabDataSet>().0.push(handle);
     }
 
-    fn handle_event(&mut self, _data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
+    fn handle_event(&mut self, data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
+        let StateData { world, .. } = data;
         if let StateEvent::Window(event) = &event {
             if is_close_requested(&event) || is_key_down(&event, VirtualKeyCode::Escape) {
-                return Trans::Quit;
+                let mut hide_cursor = world.write_resource::<HideCursor>();
+                hide_cursor.hide = false;
             }
         }
 
