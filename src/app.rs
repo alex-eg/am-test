@@ -10,7 +10,8 @@ use amethyst::{
     renderer::{DisplayConfig, Pipeline, RenderBundle, Stage,
                Camera, Projection, PosNormTex, DrawShaded,
                VirtualKeyCode},
-    core::transform::{Transform, TransformBundle},
+    core::{transform::{Transform, TransformBundle},
+           frame_limiter::FrameRateLimitStrategy,},
     utils::{
         application_root_dir,
         scene::BasicScenePrefab,
@@ -20,6 +21,8 @@ use amethyst::{
 };
 
 type CubePrefabData = BasicScenePrefab<Vec<PosNormTex>>;
+
+use std::time::Duration;
 
 #[derive(Default)]
 struct CubePrefabDataSet(pub Vec<Handle<Prefab<CubePrefabData>>>);
@@ -103,7 +106,10 @@ pub fn run() -> Result<(), Error> {
         .with_bundle(InputBundle::<String, String>::new()
                      .with_bindings_from_file(&keys_config)?)?;
 
-    let mut game = Application::new(assets_dir, MainState, game_data)?;
+    let mut game = Application::build(assets_dir, MainState)?
+        .with_frame_limit(FrameRateLimitStrategy::SleepAndYield(Duration::from_millis(2)),
+                          144)
+        .build(game_data)?;
     game.run();
     Ok(())
 }
