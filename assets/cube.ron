@@ -1,0 +1,46 @@
+#![enable(implicit_some)]
+Prefab (
+    entities: [
+        (
+            data: (
+                light: (ambient_color: ((0.01, 0.01, 0.01, 1.0))),
+            ),
+        ),
+        (
+            data: (
+                graphics: (
+                    mesh: Asset(File("cube.obj", ObjFormat, ())),
+                    material: (
+                        albedo: Data(Rgba((1.0, 0.0, 0.0, 1.0,), (channel: Srgb),)),
+                    ),
+                ),
+                transform: (
+                    translation: (0.0, 0.0, 0.0),
+                    rotation: (0.5, 0.5, -0.5, -0.5),
+                ),
+            ),
+        ),
+        (
+            data: (
+                transform: (
+                    translation: (1.0, 1.0, 0.0),
+                ),
+                light: (
+                    light: Point((
+                        intensity: 50.0,
+                    )),
+                ),
+            ),
+        ),
+        (
+            data: (
+                light: (
+                    light: Directional((
+                        direction: (-1.0, -1.0, -1.0),
+                        color: (0.2, 0.2, 0.2, 0.2,),
+                    )),
+                ),
+            ),
+        ),
+   ]
+)

@@ -4,5 +4,6 @@ version = "0.1.0"
 authors = []
 edition = "2018"
 
-[dependencies]
-amethyst = "0.10.0"
+[dependencies.amethyst]
+git = "https://github.com/amethyst/amethyst.git"
+features = ["nightly"]
