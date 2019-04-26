@@ -3,7 +3,7 @@ Prefab (
     entities: [
         (
             data: (
-                light: (ambient_color: ((0.01, 0.01, 0.01, 1.0))),
+                light: (ambient_color: ((0.1, 0.1, 0.1, 1.0))),
             ),
         ),
         (
@@ -23,7 +23,7 @@ Prefab (
         (
             data: (
                 transform: (
-                    translation: (1.0, 1.0, 0.0),
+                    translation: (10.0, 10.0, 0.0),
                 ),
                 light: (
                     light: Point((
