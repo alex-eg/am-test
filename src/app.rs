@@ -9,7 +9,7 @@ use amethyst::{
     input::{is_close_requested, is_key_down, InputBundle},
     renderer::{DisplayConfig, Pipeline, RenderBundle, Stage,
                Camera, Projection, PosNormTex, DrawShaded,
-               VirtualKeyCode},
+               VirtualKeyCode, MouseButton},
     core::{transform::{Transform, TransformBundle},
            frame_limiter::FrameRateLimitStrategy,},
     utils::{
@@ -19,6 +19,8 @@ use amethyst::{
     core::math::Vector3,
     Error,
 };
+
+use crate::utils::is_mouse_button_released;
 
 type CubePrefabData = BasicScenePrefab<Vec<PosNormTex>>;
 
@@ -53,9 +55,11 @@ impl SimpleState for MainState {
             if is_key_down(&event, VirtualKeyCode::Escape) {
                 let mut hide_cursor = world.write_resource::<HideCursor>();
                 hide_cursor.hide = false;
-            }
-            if is_close_requested(&event) {
+            } else if is_close_requested(&event) {
                 return Trans::Quit;
+            } else if is_mouse_button_released(&event, MouseButton::Left) {
+                let mut hide_cursor = world.write_resource::<HideCursor>();
+                hide_cursor.hide = true;
             }
         }
 
