@@ -50,9 +50,12 @@ impl SimpleState for MainState {
     fn handle_event(&mut self, data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
         let StateData { world, .. } = data;
         if let StateEvent::Window(event) = &event {
-            if is_close_requested(&event) || is_key_down(&event, VirtualKeyCode::Escape) {
+            if is_key_down(&event, VirtualKeyCode::Escape) {
                 let mut hide_cursor = world.write_resource::<HideCursor>();
                 hide_cursor.hide = false;
+            }
+            if is_close_requested(&event) {
+                return Trans::Quit;
             }
         }
 
