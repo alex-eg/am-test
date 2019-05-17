@@ -1,22 +1,20 @@
 use amethyst::{
-    assets::{
-        Prefab, PrefabLoader, PrefabLoaderSystem, RonFormat,
-        Handle
-    },
+    assets::{Handle, Prefab, PrefabLoader, PrefabLoaderSystem, RonFormat},
     controls::{FlyControlBundle, FlyControlTag, HideCursor},
-    ecs::{Component, DenseVecStorage},
-    prelude::*,
-    input::{is_close_requested, is_key_down, InputBundle},
-    renderer::{DisplayConfig, Pipeline, RenderBundle, Stage,
-               Camera, Projection, PosNormTex, DrawShaded,
-               VirtualKeyCode, MouseButton},
-    core::{transform::{Transform, TransformBundle},
-           frame_limiter::FrameRateLimitStrategy,},
-    utils::{
-        application_root_dir,
-        scene::BasicScenePrefab,
+    core::{
+        frame_limiter::FrameRateLimitStrategy,
+        transform::{Transform, TransformBundle},
+        math::Vector3,
+        Float,
     },
-    core::math::Vector3,
+    ecs::{Component, DenseVecStorage},
+    input::{is_close_requested, is_key_down, InputBundle, is_mouse_button_down},
+    prelude::*,
+    renderer::{
+        Camera, DisplayConfig, DrawShaded, MouseButton, Pipeline, PosNormTex, Projection,
+        RenderBundle, Stage, VirtualKeyCode,
+    },
+    utils::{application_root_dir, scene::BasicScenePrefab},
     Error,
 };
 
@@ -28,8 +26,7 @@ use std::time::Duration;
 #[derive(Default)]
 struct CubePrefabDataSet(pub Vec<Handle<Prefab<CubePrefabData>>>);
 
-impl Component for CubePrefabDataSet
-{
+impl Component for CubePrefabDataSet {
     type Storage = DenseVecStorage<Self>;
 }
 
@@ -48,7 +45,11 @@ impl SimpleState for MainState {
         world.write_resource::<CubePrefabDataSet>().0.push(handle);
     }
 
-    fn handle_event(&mut self, data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
+    fn handle_event(
+        &mut self,
+        data: StateData<'_, GameData<'_, '_>>,
+        event: StateEvent,
+    ) -> SimpleTrans {
         let StateData { world, .. } = data;
         if let StateEvent::Window(event) = &event {
             if is_key_down(&event, VirtualKeyCode::Escape) {
@@ -79,7 +80,6 @@ fn set_camera(world: &mut World) {
 }
 
 pub fn run() -> Result<(), Error> {
-
     amethyst::start_logger(Default::default());
 
     let app_root = application_root_dir()?;
@@ -101,20 +101,23 @@ pub fn run() -> Result<(), Error> {
     let game_data = GameDataBuilder::default()
         .with(PrefabLoaderSystem::<CubePrefabData>::default(), "", &[])
         .with_bundle(RenderBundle::new(pipe, Some(config)))?
-        .with_bundle(FlyControlBundle::<String, String>::new(
-            Some(String::from("move_x")),
-            Some(String::from("move_y")),
-            Some(String::from("move_z")),
-        )
-                     .with_speed(5.0)
-                     .with_sensitivity(0.1, 0.1))?
+        .with_bundle(
+            FlyControlBundle::<String, String>::new(
+                Some(String::from("move_x")),
+                Some(String::from("move_y")),
+                Some(String::from("move_z")),
+            )
+            .with_speed(5.0)
+            .with_sensitivity(0.1, 0.1),
+        )?
         .with_bundle(TransformBundle::new().with_dep(&["fly_movement"]))?
-        .with_bundle(InputBundle::<String, String>::new()
-                     .with_bindings_from_file(&keys_config)?)?;
+        .with_bundle(InputBundle::<String, String>::new().with_bindings_from_file(&keys_config)?)?;
 
     let mut game = Application::build(assets_dir, MainState)?
-        .with_frame_limit(FrameRateLimitStrategy::SleepAndYield(Duration::from_millis(2)),
-                          144)
+        .with_frame_limit(
+            FrameRateLimitStrategy::SleepAndYield(Duration::from_millis(2)),
+            144,
+        )
         .build(game_data)?;
     game.run();
     Ok(())
