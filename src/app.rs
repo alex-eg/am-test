@@ -18,6 +18,17 @@ use amethyst::{
     Error,
 };
 
+macro_rules! f {
+    ($x:expr) => {
+        Float::from($x);
+    }
+}
+
+macro_rules! v3 {
+    ($f1:expr, $f2:expr, $f3:expr) => {
+        Vector3::new(f!($f1), f!($f2), f!($f3));
+    }
+}
 
 type CubePrefabData = BasicScenePrefab<Vec<PosNormTex>>;
 
@@ -69,10 +80,12 @@ impl SimpleState for MainState {
 
 fn set_camera(world: &mut World) {
     let mut transform = Transform::default();
-    let pos = Vector3::new(0.0, 2.0, 3.0);
+    let pos = v3!(0.0, 2.0, 3.0);
     transform.set_translation(pos);
-    transform.face_towards(Vector3::new(0.0, 0.0, 0.0), Vector3::new(0.0, 1.0, 0.0));
-    world.create_entity()
+    transform.face_towards(v3!(0.0, 0.0, 0.0),
+                           v3!(0.0, 1.0, 0.0));
+    world
+        .create_entity()
         .with(FlyControlTag)
         .with(Camera::from(Projection::perspective(4.0 / 3.0, 0.87)))
         .with(transform)
