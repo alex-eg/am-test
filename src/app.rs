@@ -20,7 +20,6 @@ use amethyst::{
     Error,
 };
 
-use crate::utils::is_mouse_button_released;
 
 type CubePrefabData = BasicScenePrefab<Vec<PosNormTex>>;
 
@@ -57,7 +56,7 @@ impl SimpleState for MainState {
                 hide_cursor.hide = false;
             } else if is_close_requested(&event) {
                 return Trans::Quit;
-            } else if is_mouse_button_released(&event, MouseButton::Left) {
+            } else if is_mouse_button_down(&event, MouseButton::Left) {
                 let mut hide_cursor = world.write_resource::<HideCursor>();
                 hide_cursor.hide = true;
             }
